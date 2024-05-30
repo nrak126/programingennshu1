@@ -1,21 +1,21 @@
 #include <stdio.h>
 
 int main(int argc, const char* argv[]) {
-  int n, x, count = 0;
+  int n, x, i, j, k, count;
   printf("n x? ");
   scanf("%d %d", &n, &x);
+  count = 0;
 
-  for (int i = 1; i <= n; i++) {
-    for (int j = 1; j <= n; j++) {
-      for (int k = 1; k <= n; k++) {
-        if (i + j + k == x) {
-          printf("%d%d%d\n", i, j, k);
-          count++;
-        }
+  for (i = 1; i <= n; i++) {
+    for (j = 1; j < x - i; j++) {
+      k = x - i - j;
+      if (k > 0 && k <= n) {
+        printf("%d%d%d\n", i, j, k);
+        count++;
       }
     }
   }
 
-  printf("組み合わせの数: %d\n", count);
+  printf("組合せの数: %d\n", count);
   return 0;
 }
