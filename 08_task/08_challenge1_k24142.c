@@ -10,8 +10,9 @@ int main(int argc, const char* argv[]) {
 
   while (input > 1) {
     if (input % factor == 0) {
-      printf("%d ", factor);
+      printf("%d", factor);
       input /= factor;
+      if(input > 1) printf(", ");
     } else {
       factor++;
     }

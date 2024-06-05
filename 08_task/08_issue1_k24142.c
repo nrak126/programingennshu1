@@ -7,20 +7,23 @@ int main(int argc, const char* argv[]) {
     printf("amount? ");
     scanf("%d", &amount);
 
-    if (amount == 0 || bank <= 0 || wallet <= 0) {
+    if (amount == 0) {
       printf("取引終了\n");
       break;
     }
 
     if (amount > 0) {
-      wallet -= amount;
-      bank += amount;
+      wallet += amount;
+      bank -= amount;
     } else {
-      bank += amount;
-      wallet -= amount;
+      bank -= amount;
+      wallet += amount;
     }
 
     printf("銀行: %d 財布: %d\n", bank, wallet);
+    if(wallet < 0 || amount < 0){
+      break;
+    }
   }
 
   return 0;

@@ -7,14 +7,13 @@ int main(int argc, const char* argv[]) {
     printf("x? ");
     scanf("%d", &x);
 
+    sum += x;
+    printf("sum: %d\n", sum);
+
     if (x == 0) {
       printf("end\n");
       break;
     }
-
-    sum += x;
-    printf("sum: %d\n", sum);
   }
-
   return 0;
 }

@@ -6,14 +6,11 @@ int main(int argc, const char* argv[]) {
   while (1) {
     printf("amount? ");
     scanf("%d", &amount);
-
-    if (amount <= 0) {
-      printf("残高: %d\n", wallet);
-      break;
-    }
-
+    
     wallet -= amount;
     printf("残高: %d\n", wallet);
+
+    if(wallet <= 0) break;
   }
 
   return 0;
