@@ -1,0 +1,9 @@
+{
+  "debug.console.collapseIdenticalLines": false,
+  "files.associations": {
+    "stdio.h": "c",
+    "__config": "c",
+    "stdbool.h": "c"
+  },
+  "cSpell.words": ["outro", "Treatmentable"]
+}
