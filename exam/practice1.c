@@ -5,7 +5,11 @@ int main(int argc, char *argv[]) {
     scanf("%d %d", &x, &y);
 
     result = x;
-    for
+    for(int i = 1; i = y; i++) {
+        result = result * x;
+    }
 
-        return 0;
+    printf("result = %d\n", result);
+
+    return (0);
 }
