@@ -7,7 +7,7 @@
 
 #include <stdio.h>
 
-int main(int argc, const char * argv[]){
+int main(int argc, const char *argv[]) {
     int x;
     printf("x? ");
     scanf("%d", &x);

@@ -7,7 +7,7 @@
 
 #include <stdio.h>
 
-int main(int argc, const char * argv[]){
+int main(int argc, const char *argv[]) {
     int a, b, c;
     a = 6;
     b = 4;

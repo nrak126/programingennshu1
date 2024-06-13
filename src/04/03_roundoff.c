@@ -6,14 +6,14 @@
 //
 
 #include <stdio.h>
-int main(int argc, const char * argv[]) {
+int main(int argc, const char *argv[]) {
     int nx;
     double dx;
     printf("dx？ ");
     scanf("%lf", &dx);
-    printf("dx/2 = %f\n", dx/2);
+    printf("dx/2 = %f\n", dx / 2);
     nx = dx;
     printf("nx = %d\n", nx);
-    printf("nx/2 = %d\n", nx/2);
+    printf("nx/2 = %d\n", nx / 2);
     return 0;
 }

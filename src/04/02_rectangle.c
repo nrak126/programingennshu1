@@ -7,12 +7,12 @@
 
 #include <stdio.h>
 
-int main(int argc, const char * argv[]){
-    double w,h;
+int main(int argc, const char *argv[]) {
+    double w, h;
     printf("Width? ");
     scanf("%f", &w);
     printf("height? ");
     scanf("%f", &h);
-    printf("area = %f\n", w*h);
+    printf("area = %f\n", w * h);
     return 0;
 }
