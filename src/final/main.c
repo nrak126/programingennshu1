@@ -1,5 +1,5 @@
 #include <stdio.h>
-#define MAP_SIZE 10
+#define MAP_SIZE 40
 #define WALL '#'
 
 void showMap(char map[][MAP_SIZE]) {
@@ -25,8 +25,6 @@ int main(int argc, const char *argv[]) {
             map[i][j] = WALL;
         }
     }
-
-	
 
     showMap(map);
 

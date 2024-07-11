@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define MAP_SIZE 20
+#define MAP_SIZE 6
 
 // 方向を示す定数
 #define UP 0
