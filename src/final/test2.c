@@ -7,22 +7,32 @@
 
 #define WALL '#'
 #define PATH ' '
+#define START 'S'
+#define GOAL 'G'
 
 typedef struct {
     int x, y;
 } Point;
 
-void initializeMaze(char maze[HEIGHT][WIDTH]);
-void printMaze(char maze[HEIGHT][WIDTH]);
-void digMaze(char maze[HEIGHT][WIDTH], int x, int y);
+void initializeMaze(char maze[HEIGHT][WIDTH]);        // 迷路を全て壁で埋める関数
+void printMaze(char maze[HEIGHT][WIDTH]);             // 迷路を表示させる関数
+void digMaze(char maze[HEIGHT][WIDTH], int x, int y); // 穴掘り法で迷路を整形する関数
 
 int main() {
     srand(time(NULL));
 
     char maze[HEIGHT][WIDTH];
+
+    // 迷路の生成
     initializeMaze(maze);
-    digMaze(maze, 1, 1); // スタート地点を(1, 1)に設定
+    digMaze(maze, 1, 1);
+    // STARTとGOAL位置の設定
+    maze[1][1] = START;
+    maze[HEIGHT - 2][WIDTH - 2] = GOAL;
+
     printMaze(maze);
+
+    // プレイヤーの初期位置
 
     return 0;
 }
@@ -45,7 +55,7 @@ void printMaze(char maze[HEIGHT][WIDTH]) {
     }
 }
 
-void digMaze(char maze[HEIGHT][WIDTH], int x, int y) {
+void digMaze(char maze[HEIGHT][WIDTH], int x, int y) { // 深さ湯煎探索を使用して穴掘り法を行う
     const int directions[4][2] = {{0, -2}, {2, 0}, {0, 2}, {-2, 0}};
     int order[4] = {0, 1, 2, 3};
 
@@ -63,10 +73,8 @@ void digMaze(char maze[HEIGHT][WIDTH], int x, int y) {
         int nx = x + directions[order[i]][0];
         int ny = y + directions[order[i]][1];
 
-        if(nx > 0 && nx < WIDTH && ny > 0 && ny < HEIGHT &&
-           maze[ny][nx] == WALL) {
-            maze[ny - directions[order[i]][1] / 2]
-                [nx - directions[order[i]][0] / 2] = PATH;
+        if(nx > 0 && nx < WIDTH && ny > 0 && ny < HEIGHT && maze[ny][nx] == WALL) {
+            maze[ny - directions[order[i]][1] / 2][nx - directions[order[i]][0] / 2] = PATH;
             digMaze(maze, nx, ny);
         }
     }
