@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define MAP_SIZE 6
+#define MAP_SIZE 40
 
 // 方向を示す定数
 #define UP 0
@@ -56,16 +56,16 @@ void makeMap(char map[][MAP_SIZE]) {
             int nx = x, ny = y;
             switch(directions[i]) {
             case UP:
-                nx = x - 2;
+                nx = x - 1;
                 break;
             case RIGHT:
-                ny = y + 2;
+                ny = y + 1;
                 break;
             case DOWN:
-                nx = x + 2;
+                nx = x + 1;
                 break;
             case LEFT:
-                ny = y - 2;
+                ny = y - 1;
                 break;
             }
 
