@@ -7,7 +7,6 @@
 
 #define WALL '#'
 #define PATH ' '
-#define START 'S'
 #define GOAL 'G'
 
 typedef struct {
@@ -26,10 +25,8 @@ int main() {
     // 迷路の生成
     initializeMaze(maze);
     digMaze(maze, 1, 1);
-    // STARTとGOAL位置の設定
-    maze[1][1] = START;
+    // GOAL位置の設定
     maze[HEIGHT - 2][WIDTH - 2] = GOAL;
-
     printMaze(maze);
 
     // プレイヤーの初期位置
@@ -61,8 +58,7 @@ void digMaze(char maze[HEIGHT][WIDTH], int x, int y) { // 深さ湯煎探索を�
 
     maze[y][x] = PATH;
 
-    // ランダムな順序で掘る方向を決める
-    for(int i = 0; i < 4; i++) {
+    for(int i = 0; i < 4; i++) { // ランダムな順序で掘る方向を決める
         int r = rand() % 4;
         int temp = order[i];
         order[i] = order[r];
@@ -73,7 +69,7 @@ void digMaze(char maze[HEIGHT][WIDTH], int x, int y) { // 深さ湯煎探索を�
         int nx = x + directions[order[i]][0];
         int ny = y + directions[order[i]][1];
 
-        if(nx > 0 && nx < WIDTH && ny > 0 && ny < HEIGHT && maze[ny][nx] == WALL) {
+        if(nx > 0 && nx < WIDTH && ny > 0 && ny < HEIGHT && maze[ny][nx] == WALL) { // もし掘り進められるのならば掘り進める
             maze[ny - directions[order[i]][1] / 2][nx - directions[order[i]][0] / 2] = PATH;
             digMaze(maze, nx, ny);
         }
