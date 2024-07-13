@@ -13,9 +13,9 @@ typedef struct { // 座標を格納する構造体
     int x, y;
 } Point;
 
-void initializeMaze(char maze[HEIGHT][WIDTH]);        // 迷路を全て壁で埋める関数
-void printMaze(char maze[HEIGHT][WIDTH]);             // 迷路を表示させる関数
-void digMaze(char maze[HEIGHT][WIDTH], Point crrent); // 穴掘り法で迷路を整形する関数
+void initializeMaze(char maze[HEIGHT][WIDTH]);               // 迷路を全て壁で埋める関数
+void printMaze(char maze[HEIGHT][WIDTH], Point playerPoint); // 迷路を表示させる関数
+void digMaze(char maze[HEIGHT][WIDTH], Point crrent);        // 穴掘り法で迷路を整形する関数
 
 int main() {
     srand(time(NULL));
@@ -23,12 +23,13 @@ int main() {
     // 迷路の生成
     char maze[HEIGHT][WIDTH];
     Point startPoint = {1, 1};
+    Point goalPoint = {HEIGHT - 2, WIDTH - 2};
     initializeMaze(maze);
     digMaze(maze, startPoint);
 
     // GOAL位置の設定
     maze[HEIGHT - 2][WIDTH - 2] = GOAL;
-    printMaze(maze);
+    printMaze(maze, startPoint);
 
     // プレイヤーの移動処理
     Point playerPoint = startPoint;
@@ -36,16 +37,25 @@ int main() {
     while(playerPoint.x != WIDTH && playerPoint.y != HEIGHT) {
         switch(getchar()) {
         case 'w':
+            playerPoint.y--;
             break;
 
         case 'a':
+            playerPoint.x--;
             break;
 
         case 's':
+            playerPoint.y++;
             break;
 
         case 'd':
+            playerPoint.x++;
             break;
+        }
+        printMaze(maze, playerPoint);
+        if(HEIGHT - 2 == playerPoint.y && WIDTH - 2 == playerPoint.x) {
+            printf("goal!!\n");
+            return 0;
         }
     }
 
@@ -60,10 +70,14 @@ void initializeMaze(char maze[HEIGHT][WIDTH]) {
     }
 }
 
-void printMaze(char maze[HEIGHT][WIDTH]) {
+void printMaze(char maze[HEIGHT][WIDTH], Point point) {
     for(int y = 0; y < HEIGHT; y++) {
         for(int x = 0; x < WIDTH; x++) {
-            putchar(maze[y][x]);
+            if(y == point.y && x == point.x)
+                putchar('P');
+            else
+                putchar(maze[y][x]);
+
             putchar(' ');
         }
         putchar('\n');
