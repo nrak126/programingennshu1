@@ -8,6 +8,8 @@
 #define WIDTH 21
 #define HEIGHT 21
 
+#define TRICK 1
+
 #define WALL '#'
 #define PATH ' '
 #define PLAYER 'P'
@@ -24,6 +26,7 @@ void printMaze(char maze[HEIGHT][WIDTH]);                                    // 
 void digMaze(char maze[HEIGHT][WIDTH], Point current);                       // 穴掘り法で迷路を整形する関数
 void movePlayer(char maze[HEIGHT][WIDTH], Point *player, char direction);    // プレイヤーの移動を処理する関数
 void shuffleDirections(int directions[4]);                                   // 掘る方向をランダムにシャッフルする関数
+void randomTrick(char maze[HEIGHT][WIDTH], Point player);                    // 確率でギミックを発生させる関数
 void enableRawMode();                                                        // ターミナルをrawモードに切り替える関数
 void disableRawMode();                                                       // ターミナルを元のモードに戻す関数
 
@@ -131,6 +134,14 @@ void shuffleDirections(int directions[4]) {
         int temp = directions[i];      // 値を一時変数に保存
         directions[i] = directions[r]; // ランダムな方向に入れ替え
         directions[r] = temp;          // 一時変数の値を代入
+    }
+}
+
+void randomTrick(char maze[HEIGHT][WIDTH], Point player) {
+    switch(rand() % TRICK) {
+    case 0:
+    
+        break;
     }
 }
 
