@@ -8,7 +8,7 @@
 #define WIDTH 21
 #define HEIGHT 21
 
-#define TRICK 4
+#define TRICK 6
 
 #define WALL '#'
 #define PATH ' '
@@ -59,12 +59,12 @@ int main() {
 
     printMaze(maze); // 迷路を表示
 
-    while(true) {              // プレイヤーがゴールに到達するまでループ
-        char move = getchar(); // キー入力を取得
-        randomTrick(maze, &playerPoint, &goalPoint);
-        movePlayer(maze, &playerPoint, move); // プレイヤーを移動
-        printMaze(maze);                      // 迷路を表示
-        printCurrentTrick();
+    while(true) {                                                          // プレイヤーがゴールに到達するまでループ
+        char move = getchar();                                             // キー入力を取得
+        randomTrick(maze, &playerPoint, &goalPoint);                       // 確率でギミックを発生させる関数
+        movePlayer(maze, &playerPoint, move);                              // プレイヤーを移動
+        printMaze(maze);                                                   // 迷路を表示
+        printCurrentTrick();                                               // 行ったギミックを表示する
         if(playerPoint.x == goalPoint.x && playerPoint.y == goalPoint.y) { // プレイヤーがゴールに到達したかを確認
             printf("Goal!!\n");                                            // ゴールメッセージを表示
             break;                                                         // ループを抜ける
@@ -117,9 +117,15 @@ void printCurrentTrick(void) {
         printf("上下反転\n");
         break;
     case 2:
-        printf("回転\n");
+        printf("上下左右反転\n");
         break;
     case 3:
+        printf("右回転\n");
+        break;
+    case 4:
+        printf("左回転\n");
+        break;
+    case 5:
         printf("暗転\n");
         break;
     }
@@ -186,9 +192,18 @@ void randomTrick(char maze[HEIGHT][WIDTH], Point *player, Point *goal) {
         upsideDownMaze(maze, player, goal);
         break;
     case 2:
-        rotationMaze(maze, player, goal);
+        verticalInvertMaze(maze, player, goal);
+        upsideDownMaze(maze, player, goal);
         break;
     case 3:
+        rotationMaze(maze, player, goal);
+        break;
+    case 4:
+        rotationMaze(maze, player, goal);
+        rotationMaze(maze, player, goal);
+        rotationMaze(maze, player, goal);
+        break;
+    case 5:
         blindTurns = 3;
         break;
     }
