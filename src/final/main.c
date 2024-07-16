@@ -26,9 +26,14 @@ void printMaze(char maze[HEIGHT][WIDTH]);                                    // 
 void digMaze(char maze[HEIGHT][WIDTH], Point current);                       // 穴掘り法で迷路を整形する関数
 void movePlayer(char maze[HEIGHT][WIDTH], Point *player, char direction);    // プレイヤーの移動を処理する関数
 void shuffleDirections(int directions[4]);                                   // 掘る方向をランダムにシャッフルする関数
-void randomTrick(char maze[HEIGHT][WIDTH], Point player);                    // 確率でギミックを発生させる関数
-void enableRawMode();                                                        // ターミナルをrawモードに切り替える関数
-void disableRawMode();                                                       // ターミナルを元のモードに戻す関数
+
+void randomTrick(char maze[HEIGHT][WIDTH], Point *player, Point *goal);          // 確率でギミックを発生させる関数
+void VerticalInvertedMaze(char maze[HEIGHT][WIDTH], Point *Player, Point *goal); // 迷路を左右反転させる関数
+void UpsideDownMaze(char maze[HEIGHT][WIDTH], Point *Player, Point *goal);       // 迷路を上下反転させる関数
+void BlindMaze(char maze[HEIGHT][WIDTH]);                                        // 迷路を暗転させる関数
+
+void enableRawMode();  // ターミナルをrawモードに切り替える関数
+void disableRawMode(); // ターミナルを元のモードに戻す関数
 
 // グローバル変数
 struct termios orig_termios;
@@ -36,23 +41,27 @@ struct termios orig_termios;
 int main() {
     srand(time(NULL)); // 乱数の種を設定
 
-    char maze[HEIGHT][WIDTH];                        // 迷路を表す2次元配列
-    Point startPoint = {1, 1};                       // スタート地点の座標
-    Point goalPoint = {HEIGHT - 2, WIDTH - 2};       // ゴール地点の座標
+    char maze[HEIGHT][WIDTH];                  // 迷路を表す2次元配列
+    Point startPoint = {1, 1};                 // スタート地点の座標
+    Point goalPoint = {HEIGHT - 2, WIDTH - 2}; // ゴール地点の座標
+    Point playerPoint = startPoint;            // プレイヤーの初期位置
+
     initializeMaze(maze);                            // 迷路を壁で埋める
     digMaze(maze, startPoint);                       // 穴掘り法で迷路を整形
     placePlayerAndGoal(maze, startPoint, goalPoint); // プレイヤーとゴールの位置を設定
 
-    Point playerPoint = startPoint;                                        // プレイヤーの初期位置
-    enableRawMode();                                                       // ターミナルをrawモードに切り替える
-    while(true) {                                                          // プレイヤーがゴールに到達するまでループ
+    enableRawMode(); // ターミナルをrawモードに切り替える
+
+    printMaze(maze); // 迷路を表示
+
+    while(true) {                             // プレイヤーがゴールに到達するまでループ
+        char move = getchar();                // キー入力を取得
+        movePlayer(maze, &playerPoint, move); // プレイヤーを移動
+        randomTrick(maze, &playerPoint, &goalPoint);
         printMaze(maze);                                                   // 迷路を表示
-        char move = getchar();                                             // キー入力を取得
-        movePlayer(maze, &playerPoint, move);                              // プレイヤーを移動
         if(playerPoint.x == goalPoint.x && playerPoint.y == goalPoint.y) { // プレイヤーがゴールに到達したかを確認
-            printMaze(maze);
-            printf("Goal!!\n"); // ゴールメッセージを表示
-            break;              // ループを抜ける
+            printf("Goal!!\n");                                            // ゴールメッセージを表示
+            break;                                                         // ループを抜ける
         }
     }
     disableRawMode(); // ターミナルを元のモードに戻す
@@ -137,13 +146,27 @@ void shuffleDirections(int directions[4]) {
     }
 }
 
-void randomTrick(char maze[HEIGHT][WIDTH], Point player) {
+void randomTrick(char maze[HEIGHT][WIDTH], Point *player, Point *goal) {
     switch(rand() % TRICK) {
     case 0:
-    
+        VerticalInvertedMaze(maze, player, goal);
         break;
     }
 }
+// 迷路を左右反転させる関数
+void VerticalInvertedMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal) {
+    for(int i = 0; i < HEIGHT; i++) {
+        for(int j = 0; j < WIDTH / 2; j++) {
+            char temp = maze[i][j];              // 一時的にmaze[i][j]の値を保存
+            maze[i][j] = maze[i][WIDTH - j - 1]; // 左側の値を右側に置き換える
+            maze[i][WIDTH - j - 1] = temp;       // 一時的に保存しておいた値を右側に置き換える
+        }
+    }
+    player->x = WIDTH - player->x - 1;
+    goal->x = WIDTH - goal->x - 1;
+}
+void UpsideDownMaze(char maze[HEIGHT][WIDTH], Point *Player, Point *goal); // 迷路を上下反転させる関数
+void BlindMaze(char maze[HEIGHT][WIDTH]);                                  // 迷路を暗転させる関数
 
 // ターミナルをrawモードに切り替える関数
 void enableRawMode() {
