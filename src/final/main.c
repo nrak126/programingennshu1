@@ -8,12 +8,15 @@
 #define WIDTH 21
 #define HEIGHT 21
 
-#define TRICK 2
+#define TRICK 3
 
 #define WALL '#'
 #define PATH ' '
 #define PLAYER 'P'
 #define GOAL 'G'
+
+int blindTurns = 0; // 暗転状態の残りターン数
+int currentTrick = -1; //現在のトリックの状態を追跡する変数
 
 typedef struct {
     int x, y;
@@ -23,7 +26,7 @@ typedef struct {
 void initializeMaze(char maze[HEIGHT][WIDTH]);                               // 迷路を全て壁で埋める関数
 void placePlayerAndGoal(char maze[HEIGHT][WIDTH], Point player, Point goal); // プレイヤーとゴールの位置を設定する関数
 void printMaze(char maze[HEIGHT][WIDTH]);                                    // 迷路を表示させる関数
-void digMaze(char maze[HEIGHT][WIDTH], Point current);                       // 穴掘り法で迷路を整形する関数
+void digMaze(char maze[HEIGHT][WIDTH], Point current);                       // 穴掘り法で迷路を生成する関数
 void movePlayer(char maze[HEIGHT][WIDTH], Point *player, char direction);    // プレイヤーの移動を処理する関数
 void shuffleDirections(int directions[4]);                                   // 掘る方向をランダムにシャッフルする関数
 
@@ -47,7 +50,7 @@ int main() {
     Point playerPoint = startPoint;            // プレイヤーの初期位置
 
     initializeMaze(maze);                            // 迷路を壁で埋める
-    digMaze(maze, startPoint);                       // 穴掘り法で迷路を整形
+    digMaze(maze, startPoint);                       // 穴掘り法で迷路を生成
     placePlayerAndGoal(maze, startPoint, goalPoint); // プレイヤーとゴールの位置を設定
 
     enableRawMode(); // ターミナルをrawモードに切り替える
@@ -85,6 +88,12 @@ void placePlayerAndGoal(char maze[HEIGHT][WIDTH], Point player, Point goal) {
 
 // 迷路を表示する関数
 void printMaze(char maze[HEIGHT][WIDTH]) {
+    if(blindTurns > 0) {
+        BlindMaze(maze);
+        blindTurns--; // 残りの暗転ターン数を減らす
+        return;
+    }
+
     system("clear"); // 画面をクリア
     for(int y = 0; y < HEIGHT; y++) {
         for(int x = 0; x < WIDTH; x++) {
@@ -154,6 +163,9 @@ void randomTrick(char maze[HEIGHT][WIDTH], Point *player, Point *goal) {
     case 1:
         UpsideDownMaze(maze, player, goal);
         break;
+    case 2:
+        blindTurns = 3;
+        break;
     }
 }
 // 迷路を左右反転させる関数
@@ -181,7 +193,21 @@ void UpsideDownMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal) {
     player->y = HEIGHT - player->y - 1;
     goal->y = HEIGHT - goal->y - 1;
 }
-void BlindMaze(char maze[HEIGHT][WIDTH]); // 迷路を暗転させる関数
+// 迷路を暗転させる関数
+void BlindMaze(char maze[HEIGHT][WIDTH]) {
+    system("clear"); // 画面をクリア
+    for(int y = 0; y < HEIGHT; y++) {
+        for(int x = 0; x < WIDTH; x++) {
+            if(maze[y][x] == WALL) {
+                putchar(' '); // すべてのセルを空白で表示
+            } else {
+                putchar(maze[y][x]);
+            }
+            putchar(' '); // セル間のスペースを表示
+        }
+        putchar('\n'); // 行の終わりに改行を表示
+    }
+}
 
 // ターミナルをrawモードに切り替える関数
 void enableRawMode() {
