@@ -118,7 +118,7 @@ void printMaze(char maze[HEIGHT][WIDTH]) {
 // 発生したトリックが何かを表示させる関数
 void printTrick(void) {
     if(currentTrick != -1)
-        printf("current...");
+        printf("現在のトリック： ");
     switch(currentTrick) {
     case 0:
         printf("左右反転\n");
@@ -140,7 +140,7 @@ void printTrick(void) {
         break;
     }
 
-    printf("next before %d turn...", trickTurns);
+    printf("次のトリックまであと %d ターン: ", trickTurns);
     switch(nextTrick) {
     case 0:
         printf("左右反転\n");
@@ -217,7 +217,7 @@ void shuffleDirections(int directions[4]) {
 
 void trickMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal) {
     currentTrick = nextTrick;
-    trickTurns = rand() % 5 + 3;
+    trickTurns = rand() % 7 + 3;
     nextTrick = rand() % TRICK;
 
     switch(currentTrick) {
