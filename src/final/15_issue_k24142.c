@@ -15,8 +15,10 @@
 #define PLAYER 'P'
 #define GOAL 'G'
 
-int trickTurns = 3; // 次に発生するトリックのターン数を格納する変数
-int blindTurns = 0; // 暗転状態の残りターン数
+int currentTrick = -1; // 現在のトリックの状態を追跡する変数
+int nextTrick = -1;    // 次のトリックの状態を追跡する変数
+int trickTurns = 3;    // 次に発生するトリックのターン数を格納する変数
+int blindTurns = 0;    // 暗転状態の残りターン数
 
 typedef struct {
     int x, y;
@@ -26,16 +28,17 @@ typedef struct {
 void initializeMaze(char maze[HEIGHT][WIDTH]);                               // 迷路を全て壁で埋める関数
 void placePlayerAndGoal(char maze[HEIGHT][WIDTH], Point player, Point goal); // プレイヤーとゴールの位置を設定する関数
 void printMaze(char maze[HEIGHT][WIDTH]);                                    // 迷路を表示させる関数
-void printTrick(int currentTrick, int nextTrick);                            // 今回&次に行うトリックを表示する
+void printTrick(void);                                                       // 今回&次に行うトリックを表示する
 void digMaze(char maze[HEIGHT][WIDTH], Point current);                       // 穴掘り法で迷路を生成する関数
 void movePlayer(char maze[HEIGHT][WIDTH], Point *player, char direction);    // プレイヤーの移動を処理する関数
 void shuffleDirections(int directions[4]);                                   // 掘る方向をランダムにシャッフルする関数
 
-void trickMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal, int currentTrick, int nextTrick); // 確率でトリックを発生させる関数
-void verticalInvertMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal);                         // 迷路を左右反転させる関数
-void upsideDownMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal);                             // 迷路を上下反転させる関数
-void rotationMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal);                               // 迷路を回転させる関数
-void blindMaze(char maze[HEIGHT][WIDTH]);                                                              // 迷路を暗転させる関数
+// トリック関連
+void trickMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal);          // 確率でトリックを発生させる関数
+void verticalInvertMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal); // 迷路を左右反転させる関数
+void upsideDownMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal);     // 迷路を上下反転させる関数
+void rotationMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal);       // 迷路を回転させる関数
+void blindMaze(char maze[HEIGHT][WIDTH]);                                      // 迷路を暗転させる関数
 
 void enableRawMode();  // ターミナルをrawモードに切り替える関数
 void disableRawMode(); // ターミナルを元のモードに戻す関数
@@ -55,22 +58,21 @@ int main() {
     digMaze(maze, startPoint);                       // 穴掘り法で迷路を生成
     placePlayerAndGoal(maze, startPoint, goalPoint); // プレイヤーとゴールの位置を設定
 
-    int currentTrick = -1;          // 現在のトリックの状態を追跡する変数
-    int nextTrick = rand() % TRICK; // 次のトリックの状態を追跡する変数
+    nextTrick = rand() % TRICK; // 次のトリックの状態を追跡する変数
 
     enableRawMode(); // ターミナルをrawモードに切り替える
 
     printMaze(maze); // 迷路を表示
-    printTrick(currentTrick, nextTrick);
+    printTrick();
 
-    while(true) { // プレイヤーがゴールに到達するまでループ
+    while(true) {                             // プレイヤーがゴールに到達するまでループ
+        char move = getchar();                // キー入力を取得
+        movePlayer(maze, &playerPoint, move); // プレイヤーを移動
         if(trickTurns == 0) {
-            trickMaze(maze, &playerPoint, &goalPoint, currentTrick, nextTrick); // トリックを発生させる関数
+            trickMaze(maze, &playerPoint, &goalPoint); // トリックを発生させる関数
         }
-        char move = getchar();                                             // キー入力を取得
-        movePlayer(maze, &playerPoint, move);                              // プレイヤーを移動
         printMaze(maze);                                                   // 迷路を表示
-        printTrick(currentTrick, nextTrick);                               // 今回&次に行うトリックを表示する
+        printTrick();                                                      // 今回&次に行うトリックを表示する
         if(playerPoint.x == goalPoint.x && playerPoint.y == goalPoint.y) { // プレイヤーがゴールに到達したかを確認
             printf("Goal!!\n");                                            // ゴールメッセージを表示
             break;                                                         // ループを抜ける
@@ -114,7 +116,7 @@ void printMaze(char maze[HEIGHT][WIDTH]) {
 }
 
 // 発生したトリックが何かを表示させる関数
-void printTrick(int currentTrick, int nextTrick) {
+void printTrick(void) {
     if(currentTrick != -1)
         printf("current...");
     switch(currentTrick) {
@@ -213,7 +215,7 @@ void shuffleDirections(int directions[4]) {
     }
 }
 
-void trickMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal, int currentTrick, int nextTrick) {
+void trickMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal) {
     currentTrick = nextTrick;
     trickTurns = rand() % 5 + 3;
     nextTrick = rand() % TRICK;
@@ -225,7 +227,7 @@ void trickMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal, int current
     case 1: // 上下反転
         upsideDownMaze(maze, player, goal);
         break;
-    case 2: // １８０度回転
+    case 2: // 上下左右度回転
         verticalInvertMaze(maze, player, goal);
         upsideDownMaze(maze, player, goal);
         break;
@@ -238,7 +240,7 @@ void trickMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal, int current
         rotationMaze(maze, player, goal);
         break;
     case 5: // 暗転
-        blindTurns = 3;
+        blindTurns = trickTurns;
         break;
     }
 }
@@ -268,12 +270,12 @@ void upsideDownMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal) {
     goal->y = HEIGHT - goal->y - 1;
 }
 
-// 迷路を回転させる関数
+// 迷路を右回転させる関数
 void rotationMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal) {
     int temp[HEIGHT][WIDTH];
     for(int i = 0; i < HEIGHT; i++) {
         for(int j = 0; j < WIDTH; j++) {
-            temp[j][HEIGHT - i - 1] = maze[i][j];
+            temp[j][WIDTH - i - 1] = maze[i][j];
         }
     }
     for(int i = 0; i < HEIGHT; i++) {
@@ -281,10 +283,13 @@ void rotationMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal) {
             maze[i][j] = temp[i][j];
         }
     }
-    player->x = player->y;
-    player->y = WIDTH - player->x - 1;
-    goal->x = goal->y;
-    goal->y = WIDTH - goal->x - 1;
+    int playerY = player->y;
+    player->y = player->x;
+    player->x = WIDTH - playerY - 1;
+
+    int goalY = goal->y;
+    goal->y = goal->x;
+    goal->x = WIDTH - goalY - 1;
 }
 
 // 迷路を暗転させる関数
