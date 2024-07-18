@@ -113,8 +113,13 @@ void printMaze(char maze[HEIGHT][WIDTH]) {
     system("clear"); // 画面をクリア
     for(int y = 0; y < HEIGHT; y++) {
         for(int x = 0; x < WIDTH; x++) {
-            putchar(maze[y][x]); // セルを表示
-            putchar(' ');        // セル間のスペースを表示
+            if(maze[y][x] == PLAYER)
+                printf("\x1b[96m%c\x1b[39m", maze[y][x]);
+            else if(maze[y][x] == GOAL)
+                printf("\x1b[91m%c\x1b[39m", maze[y][x]);
+            else
+                putchar(maze[y][x]); // セルを表示
+            putchar(' ');            // セル間のスペースを表示
         }
         putchar('\n'); // 行の終わりに改行を表示
     }
@@ -307,29 +312,29 @@ void blindMaze(char maze[HEIGHT][WIDTH]) {
     system("clear"); // 画面をクリア
     for(int y = 0; y < HEIGHT; y++) {
         for(int x = 0; x < WIDTH; x++) {
-            if(maze[y][x] == WALL) {
-                putchar(' '); // すべてのセルを空白で表示
-            } else {
-                putchar(maze[y][x]);
-            }
+            if(maze[y][x] == PLAYER)
+                printf("\x1b[96m%c\x1b[39m", maze[y][x]);
+            else if(maze[y][x] == GOAL)
+                printf("\x1b[91m%c\x1b[39m", maze[y][x]);
+            else
+                putchar(' ');
             putchar(' '); // セル間のスペースを表示
         }
         putchar('\n'); // 行の終わりに改行を表示
     }
 }
 
-void printTitle() {
+void printTitle(void) {
     system("clear");
-
-    printf("######  ####   ####  ##### ### ###    ###   ###    #     ###### ###### \n");
-    printf("# ## #  ## ##   ##  ##  ##  ##  #      ###  ##     ##    ##  ##  ##  # \n");
-    printf("  ##    ## ##   ##  ##      ## #       ### ###    ###    #  ##   ##    \n");
-    printf("  ##    ####    ##  ##      ####       # ## ##    # ##     ##    ###   \n");
-    printf("  ##    ## #    ##  ##      ## ##      # ## ##   #####    ##  #  ##    \n");
-    printf("  ##    ## ##   ##  ### ##  ## ###     #  # ##   #  ###  ##  ##  ##  # \n");
-    printf(" ####  ### ### ####  ####  ###  ###   ###   ### ### #### ###### ###### \n");
-
-    printf("returnを押してスタート...");
+    printf("\x1b[91m######  ####   ####  ##### ### ###    ###   ###    #     ###### ###### \n");
+    printf("\x1b[93m# ## #  ## ##   ##  ##  ##  ##  #      ###  ##     ##    ##  ##  ##  # \n");
+    printf("\x1b[93m  ##    ## ##   ##  ##      ## #       ### ###    ###    #  ##   ##    \n");
+    printf("\x1b[92m  ##    ####    ##  ##      ####       # ## ##    # ##     ##    ###   \n");
+    printf("\x1b[92m  ##    ## #    ##  ##      ## ##      # ## ##   #####    ##  #  ##    \n");
+    printf("\x1b[94m  ##    ## ##   ##  ### ##  ## ###     #  # ##   #  ###  ##  ##  ##  # \n");
+    printf("\x1b[35m ####  ### ### ####  ####  ###  ###   ###   ### ### #### ###### ###### \n");
+    printf("\x1b[36mreturnを押してスタート...");
+    printf("\x1b[39m");
     while(getchar() != '\n') {
     }
 }
