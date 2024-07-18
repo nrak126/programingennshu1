@@ -17,7 +17,7 @@
 
 int currentTrick = -1; // 現在のトリックの状態を追跡する変数
 int nextTrick = -1;    // 次のトリックの状態を追跡する変数
-int trickTurns = 3;    // 次に発生するトリックのターン数を格納する変数
+int trickTurns = 0;    // 次に発生するトリックのターン数を格納する変数
 int blindTurns = 0;    // 暗転状態の残りターン数
 
 bool isMovedPlayer = false; // プレイヤーが移動したかどうか
@@ -67,6 +67,7 @@ int main() {
     placePlayerAndGoal(maze, startPoint, goalPoint); // プレイヤーとゴールの位置を設定
 
     nextTrick = rand() % TRICK; // 次のトリックの状態を追跡する変数
+    trickTurns = rand() % 7 + 3;
 
     printMaze(maze); // 迷路を表示
     printTrick();
