@@ -64,8 +64,10 @@ int main() {
     Point playerPoint = startPoint;            // プレイヤーの初期位置
 
     // 迷路の初期設定
-    initializeMaze(maze);                            // 迷路を壁で埋める
-    digMaze(maze, startPoint);                       // 穴掘り法で迷路を生成
+    initializeMaze(maze); // 迷路を壁で埋める
+    // printf("\x1b[92m");
+    digMaze(maze, startPoint); // 穴掘り法で迷路を生成
+    // printf("\x1b[39m");
     placePlayerAndGoal(maze, startPoint, goalPoint); // プレイヤーとゴールの位置を設定
     nextTrick = rand() % TRICK;                      // 次のトリックの状態を追跡する変数
     trickTurns = rand() % 7 + 3;                     // 次のトリックまでのターン数の初期設定
@@ -187,6 +189,11 @@ void digMaze(char maze[HEIGHT][WIDTH], Point current) {
         Point next = {current.x + directions[order[i]][0], current.y + directions[order[i]][1]};
         if(next.x > 0 && next.x < WIDTH - 1 && next.y > 0 && next.y < HEIGHT - 1 && maze[next.y][next.x] == WALL) {
             maze[current.y + directions[order[i]][1] / 2][current.x + directions[order[i]][0] / 2] = PATH;
+            usleep(30000);
+            printf("\x1b[37m");
+            printMaze(maze);
+            printf("迷路生成中...\n");
+            printf("\x1b[39m");
             digMaze(maze, next); // 再帰的に掘り進める
         }
     }
