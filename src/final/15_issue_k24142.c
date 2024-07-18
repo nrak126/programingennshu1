@@ -105,7 +105,7 @@ void placePlayerAndGoal(char maze[HEIGHT][WIDTH], Point player, Point goal) {
 
 // 迷路を表示する関数
 void printMaze(char maze[HEIGHT][WIDTH]) {
-    if(blindTurns == 1) {
+    if(blindTurns > 1) {
         blindMaze(maze);
         return;
     }
