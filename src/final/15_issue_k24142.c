@@ -125,7 +125,7 @@ void printMaze(char maze[HEIGHT][WIDTH]) {
     }
 }
 
-// // 今回&次に行うトリックを表示する関数
+// 今回&次に行うトリックを表示する関数
 void printTrick(void) {
     if(currentTrick != -1)
         printf("現在のトリック： ");
