@@ -20,6 +20,8 @@ int nextTrick = -1;    // 次のトリックの状態を追跡する変数
 int trickTurns = 3;    // 次に発生するトリックのターン数を格納する変数
 int blindTurns = 0;    // 暗転状態の残りターン数
 
+bool isMovedPlayer = false; // プレイヤーが移動したかどうか
+
 typedef struct {
     int x, y;
 } Point;
@@ -68,7 +70,7 @@ int main() {
     while(true) {                             // プレイヤーがゴールに到達するまでループ
         char move = getchar();                // キー入力を取得
         movePlayer(maze, &playerPoint, move); // プレイヤーを移動
-        if(trickTurns == 0) {
+        if(trickTurns > 1) {
             trickMaze(maze, &playerPoint, &goalPoint); // トリックを発生させる関数
         }
         printMaze(maze);                                                   // 迷路を表示
@@ -99,9 +101,8 @@ void placePlayerAndGoal(char maze[HEIGHT][WIDTH], Point player, Point goal) {
 
 // 迷路を表示する関数
 void printMaze(char maze[HEIGHT][WIDTH]) {
-    if(blindTurns > 0) {
+    if(blindTurns == 1) {
         blindMaze(maze);
-        blindTurns--; // 残りの暗転ターン数を減らす
         return;
     }
 
@@ -140,6 +141,10 @@ void printTrick(void) {
         break;
     }
 
+    if(isMovedPlayer) {
+        trickTurns--;
+        blindTurns--;
+    }
     printf("次のトリックまであと %d ターン: ", trickTurns);
     switch(nextTrick) {
     case 0:
@@ -161,7 +166,6 @@ void printTrick(void) {
         printf("暗転\n");
         break;
     }
-    trickTurns--;
 }
 
 // 穴掘り法で迷路を整形する関数
@@ -199,10 +203,12 @@ void movePlayer(char maze[HEIGHT][WIDTH], Point *player, char direction) {
         break; // 右に移動
     }
     if(newPoint.x > 0 && newPoint.x < WIDTH && newPoint.y > 0 && newPoint.y < HEIGHT && maze[newPoint.y][newPoint.x] != WALL) {
+        isMovedPlayer = true;
         maze[player->y][player->x] = PATH;   // 元の位置を通路に戻す
         *player = newPoint;                  // プレイヤーの新しい位置を設定
         maze[player->y][player->x] = PLAYER; // 新しい位置をプレイヤーに設定
-    }
+    } else
+        isMovedPlayer = false;
 }
 
 // 掘る方向をランダムにシャッフルする関数
