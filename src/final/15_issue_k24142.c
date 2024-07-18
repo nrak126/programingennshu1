@@ -42,6 +42,8 @@ void upsideDownMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal);     /
 void rotationMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal);       // 迷路を回転させる関数
 void blindMaze(char maze[HEIGHT][WIDTH]);                                      // 迷路を暗転させる関数
 
+void printTitle(); // タイトル画面を表示する関数
+
 void enableRawMode();  // ターミナルをrawモードに切り替える関数
 void disableRawMode(); // ターミナルを元のモードに戻す関数
 
@@ -50,6 +52,10 @@ struct termios orig_termios;
 
 int main() {
     srand(time(NULL)); // 乱数の種を設定
+
+    enableRawMode(); // ターミナルをrawモードに切り替える
+
+    printTitle();
 
     char maze[HEIGHT][WIDTH];                  // 迷路を表す2次元配列
     Point startPoint = {1, 1};                 // スタート地点の座標
@@ -61,8 +67,6 @@ int main() {
     placePlayerAndGoal(maze, startPoint, goalPoint); // プレイヤーとゴールの位置を設定
 
     nextTrick = rand() % TRICK; // 次のトリックの状態を追跡する変数
-
-    enableRawMode(); // ターミナルをrawモードに切り替える
 
     printMaze(maze); // 迷路を表示
     printTrick();
@@ -311,6 +315,22 @@ void blindMaze(char maze[HEIGHT][WIDTH]) {
             putchar(' '); // セル間のスペースを表示
         }
         putchar('\n'); // 行の終わりに改行を表示
+    }
+}
+
+void printTitle() {
+    system("clear");
+
+    printf("######  ####   ####  ##### ### ###    ###   ###    #     ###### ###### \n");
+    printf("# ## #  ## ##   ##  ##  ##  ##  #      ###  ##     ##    ##  ##  ##  # \n");
+    printf("  ##    ## ##   ##  ##      ## #       ### ###    ###    #  ##   ##    \n");
+    printf("  ##    ####    ##  ##      ####       # ## ##    # ##     ##    ###   \n");
+    printf("  ##    ## #    ##  ##      ## ##      # ## ##   #####    ##  #  ##    \n");
+    printf("  ##    ## ##   ##  ### ##  ## ###     #  # ##   #  ###  ##  ##  ##  # \n");
+    printf(" ####  ### ### ####  ####  ###  ###   ###   ### ### #### ###### ###### \n");
+
+    printf("returnを押してスタート...");
+    while(getchar() != '\n') {
     }
 }
 
