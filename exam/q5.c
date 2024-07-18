@@ -27,3 +27,6 @@ int main(int argc, const char *argv[]) {
     return 0;
 }
 // 回答終了
+
+// 解説
+// 自分は無理やりこの方法で解いたけど、判別式を使って解いた方がいいと思う。

@@ -74,7 +74,7 @@ int main() {
     while(true) {                             // プレイヤーがゴールに到達するまでループ
         char move = getchar();                // キー入力を取得
         movePlayer(maze, &playerPoint, move); // プレイヤーを移動
-        if(trickTurns > 1) {
+        if(trickTurns <= 1) {
             trickMaze(maze, &playerPoint, &goalPoint); // トリックを発生させる関数
         }
         printMaze(maze);                                                   // 迷路を表示
@@ -105,7 +105,7 @@ void placePlayerAndGoal(char maze[HEIGHT][WIDTH], Point player, Point goal) {
 
 // 迷路を表示する関数
 void printMaze(char maze[HEIGHT][WIDTH]) {
-    if(blindTurns == 1) {
+    if(blindTurns > 1) {
         blindMaze(maze);
         return;
     }
