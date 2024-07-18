@@ -34,7 +34,8 @@ void verticalInvertMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal); /
 void upsideDownMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal);     // 迷路を上下反転させる関数
 void rotationMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal);       // 迷路を回転させる関数
 void blindMaze(char maze[HEIGHT][WIDTH]);                                      // 迷路を暗転させる関数
-void printTrick(void);                                                         // 今回&次に行うトリックを表示する関数
+void printCurrentAndNextTrick(void);                                           // 今回&次に行うトリックを表示する関数
+void printTrickName(int trick);                                                // トリックの名前を表示する関数
 
 void printTitle(void); // タイトル画面を表示する関数
 void printGoal(void);  // ゴール画面を表示する関数
@@ -72,7 +73,7 @@ int main() {
     nextTrick = rand() % TRICK;                      // 次のトリックの状態を追跡する変数
     trickTurns = rand() % 7 + 3;                     // 次のトリックまでのターン数の初期設定
     printMaze(maze);                                 // 迷路を表示
-    printTrick();                                    // 次に行うトリックを表示
+    printCurrentAndNextTrick();                      // 次に行うトリックを表示
 
     while(true) {                             // プレイヤーがゴールに到達するまでループ
         char move = getchar();                // キー入力を取得
@@ -80,7 +81,7 @@ int main() {
         if(trickTurns <= 1)
             trickMaze(maze, &playerPoint, &goalPoint);                     // トリックを発生させる関数
         printMaze(maze);                                                   // 迷路を表示
-        printTrick();                                                      // 今回&次に行うトリックを表示する
+        printCurrentAndNextTrick();                                        // 今回&次に行うトリックを表示する
         if(playerPoint.x == goalPoint.x && playerPoint.y == goalPoint.y) { // プレイヤーがゴールに到達したかを確認
             printGoal();                                                   // ゴールメッセージを表示
             break;                                                         // ループを抜ける
@@ -126,36 +127,22 @@ void printMaze(char maze[HEIGHT][WIDTH]) {
 }
 
 // 今回&次に行うトリックを表示する関数
-void printTrick(void) {
+void printCurrentAndNextTrick(void) {
     if(currentTrick != -1)
         printf("現在のトリック： ");
-    switch(currentTrick) {
-    case 0:
-        printf("左右反転\n");
-        break;
-    case 1:
-        printf("上下反転\n");
-        break;
-    case 2:
-        printf("上下左右反転\n");
-        break;
-    case 3:
-        printf("右回転\n");
-        break;
-    case 4:
-        printf("左回転\n");
-        break;
-    case 5:
-        printf("暗転\n");
-        break;
-    }
+    printTrickName(currentTrick);
 
     if(isMovedPlayer) {
         trickTurns--;
         blindTurns--;
     }
     printf("次のトリックまであと %d ターン: ", trickTurns);
-    switch(nextTrick) {
+    printTrickName(nextTrick);
+}
+
+// トリックの名前を表示する関数
+void printTrickName(int trick) {
+    switch(trick) {
     case 0:
         printf("左右反転\n");
         break;
@@ -173,6 +160,9 @@ void printTrick(void) {
         break;
     case 5:
         printf("暗転\n");
+        break;
+    default:
+        printf("未知のトリック\n");
         break;
     }
 }
