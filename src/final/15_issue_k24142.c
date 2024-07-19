@@ -161,6 +161,8 @@ void printTrickName(int trick) {
     case 5:
         printf("暗転\n");
         break;
+    case 6:
+        printf("明転\n");
     }
 }
 
@@ -226,7 +228,11 @@ void shuffleDirections(int directions[4]) {
 void trickMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal) {
     currentTrick = nextTrick;
     trickTurns = rand() % 7 + 3;
-    nextTrick = rand() % TRICK;
+
+    if(currentTrick == 5) // もし、今回行われるトリックが暗転なら、次を必ず明転にする
+        nextTrick = 6;
+    else
+        nextTrick = rand() % TRICK;
 
     switch(currentTrick) {
     case 0: // 左右反転
@@ -249,6 +255,8 @@ void trickMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal) {
         break;
     case 5: // 暗転
         blindTurns = trickTurns;
+        break;
+    case 6: // 明転（何もしない）
         break;
     }
 }
