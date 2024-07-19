@@ -161,9 +161,6 @@ void printTrickName(int trick) {
     case 5:
         printf("暗転\n");
         break;
-    default:
-        printf("未知のトリック\n");
-        break;
     }
 }
 
