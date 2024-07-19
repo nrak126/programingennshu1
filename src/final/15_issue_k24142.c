@@ -65,10 +65,8 @@ int main() {
     Point playerPoint = startPoint;            // プレイヤーの初期位置
 
     // 迷路の初期設定
-    initializeMaze(maze); // 迷路を壁で埋める
-    // printf("\x1b[92m");
-    digMaze(maze, startPoint); // 穴掘り法で迷路を生成
-    // printf("\x1b[39m");
+    initializeMaze(maze);                            // 迷路を壁で埋める
+    digMaze(maze, startPoint);                       // 穴掘り法で迷路を生成
     placePlayerAndGoal(maze, startPoint, goalPoint); // プレイヤーとゴールの位置を設定
     nextTrick = rand() % TRICK;                      // 次のトリックの状態を追跡する変数
     trickTurns = rand() % 7 + 3;                     // 次のトリックまでのターン数の初期設定
@@ -227,7 +225,7 @@ void shuffleDirections(int directions[4]) {
 // トリックを実行する関数
 void trickMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal) {
     currentTrick = nextTrick;
-    trickTurns = rand() % 7 + 3;
+    trickTurns = rand() % 7 + 4;
 
     if(currentTrick == 5) // もし、今回行われるトリックが暗転なら、次を必ず明転にする
         nextTrick = 6;
