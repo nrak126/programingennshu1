@@ -10,6 +10,8 @@
 
 #define TRICK 6
 
+#define QUEUE_MAX_SIZE 1000
+
 #define WALL '#'
 #define PATH ' '
 #define PLAYER 'P'
@@ -20,13 +22,21 @@ typedef struct {
     int x, y;
 } Point;
 
+typedef struct {
+    Point points[QUEUE_MAX_SIZE];
+    int front;
+    int rear;
+} Queue;
+
 // 関数プロトタイプ宣言
+// 迷路初期設定関連
 void initializeMaze(char maze[HEIGHT][WIDTH]);                               // 迷路を全て壁で埋める関数
 void placePlayerAndGoal(char maze[HEIGHT][WIDTH], Point player, Point goal); // プレイヤーとゴールの位置を設定する関数
 void digMaze(char maze[HEIGHT][WIDTH], Point current);                       // 穴掘り法で迷路を生成する関数
-void movePlayer(char maze[HEIGHT][WIDTH], Point *player, char direction);    // プレイヤーの移動を処理する関数
 void shuffleDirections(int directions[4]);                                   // 掘る方向をランダムにシャッフルする関数
-void printMaze(char maze[HEIGHT][WIDTH]);                                    // 迷路を表示させる関数
+
+// 移動関連
+void movePlayer(char maze[HEIGHT][WIDTH], Point *player, char direction); // プレイヤーの移動を処理する関数
 
 // トリック関連
 void trickMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal);          // トリックを実行する関数
@@ -34,12 +44,21 @@ void verticalInvertMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal); /
 void upsideDownMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal);     // 迷路を上下反転させる関数
 void rotationMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal);       // 迷路を回転させる関数
 void blindMaze(char maze[HEIGHT][WIDTH]);                                      // 迷路を暗転させる関数
-void printCurrentAndNextTrick(void);                                           // 今回&次に行うトリックを表示する関数
-void printTrickName(int trick);                                                // トリックの名前を表示する関数
 
-void printTitle(void); // タイトル画面を表示する関数
-void printGoal(void);  // ゴール画面を表示する関数
+// 表示関連
+void printMaze(char maze[HEIGHT][WIDTH]); // 迷路を表示させる関数
+void printCurrentAndNextTrick(void);      // 今回&次に行うトリックを表示する関数
+void printTrickName(int trick);           // トリックの名前を表示する関数
+void printTitle(void);                    // タイトル画面を表示する関数
+void printGoal(void);                     // ゴール画面を表示する関数
 
+// キュー関連
+void initializeQueue(Queue *queue);   // キューの初期設定をする関数
+bool isQueueEmpty(Queue *queue);      // キューの中身が存在するかを判定する関数
+bool enqueue(Queue *queue, Point p);  // キューにpを追加する関数
+bool dequeue(Queue *queue, Point *p); // キューからpに一つ取り出す関数
+
+// ターミナルの設定関連
 void enableRawMode();  // ターミナルをrawモードに切り替える関数
 void disableRawMode(); // ターミナルを元のモードに戻す関数
 
@@ -65,10 +84,8 @@ int main() {
     Point playerPoint = startPoint;            // プレイヤーの初期位置
 
     // 迷路の初期設定
-    initializeMaze(maze); // 迷路を壁で埋める
-    // printf("\x1b[92m");
-    digMaze(maze, startPoint); // 穴掘り法で迷路を生成
-    // printf("\x1b[39m");
+    initializeMaze(maze);                            // 迷路を壁で埋める
+    digMaze(maze, startPoint);                       // 穴掘り法で迷路を生成
     placePlayerAndGoal(maze, startPoint, goalPoint); // プレイヤーとゴールの位置を設定
     nextTrick = rand() % TRICK;                      // 次のトリックの状態を追跡する変数
     trickTurns = rand() % 7 + 3;                     // 次のトリックまでのターン数の初期設定
@@ -227,7 +244,7 @@ void shuffleDirections(int directions[4]) {
 // トリックを実行する関数
 void trickMaze(char maze[HEIGHT][WIDTH], Point *player, Point *goal) {
     currentTrick = nextTrick;
-    trickTurns = rand() % 7 + 3;
+    trickTurns = rand() % 7 + 4;
 
     if(currentTrick == 5) // もし、今回行われるトリックが暗転なら、次を必ず明転にする
         nextTrick = 6;
@@ -350,6 +367,35 @@ void printGoal(void) {
     printf("\x1b[94m##  ## ##  ##  #  ###   ## ## ## ## \n");
     printf("\x1b[95m ####   ####  ### #### ###### ## ## \n");
     printf("\x1b[39m");
+}
+
+// キュー関連
+//  キューの初期設定をする関数
+void initializeQueue(Queue *queue) {
+    queue->front = 0;
+    queue->rear = 0;
+}
+
+// キューの中身が存在するかを判定する関数
+bool isQueueEmpty(Queue *queue) {
+    return queue->front == queue->rear;
+}
+
+// キューにpを追加する関数
+bool enqueue(Queue *queue, Point p) {
+    if((queue->rear + 1) % QUEUE_MAX_SIZE == queue->front) {
+        return false; // キューが満タン
+    }
+    queue->points[queue->rear] = p;
+    queue->rear = (queue->rear + 1) % QUEUE_MAX_SIZE;
+    return true;
+}
+bool dequeue(Queue *queue, Point *p) {
+    if(isQueueEmpty(queue)) {
+        return false; // キューが空
+    }
+    *p = queue->points[queue->front];
+    queue->front = (queue->front + 1) % QUEUE_MAX_SIZE;
 }
 
 // ターミナルをrawモードに切り替える関数
