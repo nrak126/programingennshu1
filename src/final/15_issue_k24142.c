@@ -126,7 +126,7 @@ void digMaze(char maze[HEIGHT][WIDTH], Point current) {
         if(next.x > 0 && next.x < WIDTH - 1 && next.y > 0 && next.y < HEIGHT - 1 && maze[next.y][next.x] == WALL) {
             maze[current.y + directions[order[i]][1] / 2][current.x + directions[order[i]][0] / 2] = PATH;
             usleep(30000);
-            printf("\x1b[37m");
+            printf("\x1b[90m");
             printMaze(maze);
             printf("迷路生成中...\n");
             printf("\x1b[39m");
