@@ -65,10 +65,8 @@ int main() {
     Point playerPoint = startPoint;            // プレイヤーの初期位置
 
     // 迷路の初期設定
-    initializeMaze(maze); // 迷路を壁で埋める
-    // printf("\x1b[92m");
-    digMaze(maze, startPoint); // 穴掘り法で迷路を生成
-    // printf("\x1b[39m");
+    initializeMaze(maze);                            // 迷路を壁で埋める
+    digMaze(maze, startPoint);                       // 穴掘り法で迷路を生成
     placePlayerAndGoal(maze, startPoint, goalPoint); // プレイヤーとゴールの位置を設定
     nextTrick = rand() % TRICK;                      // 次のトリックの状態を追跡する変数
     trickTurns = rand() % 7 + 3;                     // 次のトリックまでのターン数の初期設定
@@ -78,8 +76,12 @@ int main() {
     while(true) {                             // プレイヤーがゴールに到達するまでループ
         char move = getchar();                // キー入力を取得
         movePlayer(maze, &playerPoint, move); // プレイヤーを移動
-        if(trickTurns <= 1 && isMovedPlayer)
-            trickMaze(maze, &playerPoint, &goalPoint);                     // トリックを発生させる関数
+        if(isMovedPlayer) {                   // もしプレイヤーが移動したら次のトリックまで＆暗転状態のターン数を減らす
+            trickTurns--;
+            blindTurns--;
+        }
+        if(trickTurns <= 0 && isMovedPlayer)
+            trickMaze(maze, &playerPoint, &goalPoint);                     // トリックを発生させる
         printMaze(maze);                                                   // 迷路を表示
         printCurrentAndNextTrick();                                        // 今回&次に行うトリックを表示する
         if(playerPoint.x == goalPoint.x && playerPoint.y == goalPoint.y) { // プレイヤーがゴールに到達したかを確認
@@ -106,7 +108,7 @@ void placePlayerAndGoal(char maze[HEIGHT][WIDTH], Point player, Point goal) {
 
 // 迷路を表示する関数
 void printMaze(char maze[HEIGHT][WIDTH]) {
-    if(blindTurns > 1) {
+    if(blindTurns > 0) {
         blindMaze(maze);
         return;
     }
@@ -132,10 +134,6 @@ void printCurrentAndNextTrick(void) {
         printf("現在のトリック： ");
     printTrickName(currentTrick);
 
-    if(isMovedPlayer) {
-        trickTurns--;
-        blindTurns--;
-    }
     printf("次のトリックまであと %d ターン: ", trickTurns);
     printTrickName(nextTrick);
 }
