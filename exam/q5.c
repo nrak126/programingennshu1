@@ -16,9 +16,9 @@ int main(int argc, const char *argv[]) {
 
     int ans;
 
-    if(c < 0 || (b == 0 && c > 0)) // 虚数解
+    if(b * b - 4 * c < 0) // 虚数解
         ans = 0;
-    else if(c == 0 || (b / 2 * b / 2 == c && c > 0))
+    else if(b * b - 4 * c == 0)
         ans = 1;
     else
         ans = 2;
